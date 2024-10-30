@@ -193,11 +193,18 @@ function parsePregap(params, cueSheet: CueSheet) {
 }
 
 function parseRem(params, cueSheet: CueSheet) {
-  if (!cueSheet.rem) {
-    cueSheet.rem = [];
-  }
+  const track = cueSheet.getCurrentTrack();
 
-  cueSheet.rem.push(params.join(' '));
+  if (!track) {
+    if (!track.rem)
+      track.rem = [];
+    cueSheet.rem.push(params.join(' '));
+  } else {
+    if (!cueSheet.rem) {
+      cueSheet.rem = [];
+    }
+    cueSheet.rem.push(params.join(' '));
+  }
 }
 
 function parseSongWriter(params, cueSheet: CueSheet) {
