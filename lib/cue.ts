@@ -38,27 +38,24 @@ export function parse(filename: string | Uint8Array): ICueSheet {
     return;
   }
 
-  let lines: string[];
-  if (typeof filename === 'string')
-  {
-    if (!fs.existsSync(filename)) {
+  if (typeof filename === 'string') {
+    if (!fs.existsSync(filename))
       throw new Error('file ' + filename + ' does not exist');
-    }
-
     cuesheet.encoding = chardet.detect(fs.readFileSync(filename));
-    let encoding: BufferEncoding = 'utf8';
-    if (cuesheet.encoding.startsWith('ISO-8859-')) {
-      encoding = 'binary';
-    } else if (cuesheet.encoding.toUpperCase() === 'UTF-16 LE') {
-      encoding = 'utf16le';
-    }
+  } else {
+    cuesheet.encoding = chardet.detect(filename);
+  }
 
-    lines = (fs.readFileSync(filename, {encoding, flag: 'r'}) as any)
+  let encoding: BufferEncoding = 'utf8';
+  if (cuesheet.encoding.startsWith('ISO-8859-')) {
+    encoding = 'binary';
+  } else if (cuesheet.encoding.toUpperCase() === 'UTF-16 LE') {
+    encoding = 'utf16le';
+  }
+
+  const lines = (typeof filename === "string" ? (fs.readFileSync(filename, {encoding, flag: 'r'}) as any)
+    : new TextDecoder(encoding).decode(filename))
     .replace(/\r\n/, '\n').split('\n');
-  }
-  else {
-    lines = filename.toString().replace(/\r\n/g, '\n').split('\n');
-  }
 
   lines.forEach(line => {
     if (!line.match(/^\s*$/)) {
