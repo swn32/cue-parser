@@ -54,7 +54,7 @@ export function parse(filename: string | Uint8Array): ICueSheet {
   }
 
   const lines = (typeof filename === "string" ? (fs.readFileSync(filename, {encoding, flag: 'r'}) as any)
-    : new TextDecoder(encoding).decode(filename))
+    : new TextDecoder(cuesheet.encoding).decode(filename))
     .replace(/\r\n/, '\n').split('\n');
 
   lines.forEach(line => {
