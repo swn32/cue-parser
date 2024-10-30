@@ -9,6 +9,7 @@ export declare class Track implements ITrack {
     pregap: ITime;
     postgap: ITime;
     indexes: Index[];
+    rem: string[];
     number: number;
     constructor(_number: number, type?: string);
 }
