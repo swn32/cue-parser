@@ -17,6 +17,7 @@ export interface ITrack {
     postgap?: ITime;
     indexes?: Index[];
     number?: number;
+    rem?: string[];
 }
 export interface IFile {
     name?: string;
