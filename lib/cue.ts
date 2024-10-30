@@ -30,29 +30,35 @@ const commandMap: { [command: string]: parserFunction; } = {
  * @param filename Filename path to cue-sheet to be parsed
  * @return CUE-sheet information object
  */
-export function parse(filename: string): ICueSheet {
+export function parse(filename: string | Uint8Array): ICueSheet {
   const cuesheet = new CueSheet();
 
   if (!filename) {
-    console.log('no file name specified for parse');
+    console.log('no input specified for parse');
     return;
   }
 
-  if (!fs.existsSync(filename)) {
-    throw new Error('file ' + filename + ' does not exist');
-  }
+  let lines: string[];
+  if (typeof filename === 'string')
+  {
+    if (!fs.existsSync(filename)) {
+      throw new Error('file ' + filename + ' does not exist');
+    }
 
-  cuesheet.encoding = chardet.detect(fs.readFileSync(filename));
-  let encoding: BufferEncoding = 'utf8';
+    cuesheet.encoding = chardet.detect(fs.readFileSync(filename));
+    let encoding: BufferEncoding = 'utf8';
+    if (cuesheet.encoding.startsWith('ISO-8859-')) {
+      encoding = 'binary';
+    } else if (cuesheet.encoding.toUpperCase() === 'UTF-16 LE') {
+      encoding = 'utf16le';
+    }
 
-  if (cuesheet.encoding.startsWith('ISO-8859-')) {
-    encoding = 'binary';
-  } else if (cuesheet.encoding.toUpperCase() === 'UTF-16 LE') {
-    encoding = 'utf16le';
-  }
-
-  const lines = (fs.readFileSync(filename, {encoding, flag: 'r'}) as any)
+    lines = (fs.readFileSync(filename, {encoding, flag: 'r'}) as any)
     .replace(/\r\n/, '\n').split('\n');
+  }
+  else {
+    lines = filename.toString().replace(/\r\n/g, '\n').split('\n');
+  }
 
   lines.forEach(line => {
     if (!line.match(/^\s*$/)) {
