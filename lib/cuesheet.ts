@@ -10,6 +10,7 @@ export class Track implements ITrack {
   public pregap: ITime = null;
   public postgap: ITime = null;
   public indexes: Index[] = null;
+  public rem: string[] = null;
   public number: number;
 
   constructor(_number: number, public type: string = null) {
