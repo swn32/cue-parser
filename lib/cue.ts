@@ -195,10 +195,10 @@ function parsePregap(params, cueSheet: CueSheet) {
 function parseRem(params, cueSheet: CueSheet) {
   const track = cueSheet.getCurrentTrack();
 
-  if (!track) {
+  if (track) {
     if (!track.rem)
       track.rem = [];
-    cueSheet.rem.push(params.join(' '));
+    track.rem.push(params.join(' '));
   } else {
     if (!cueSheet.rem) {
       cueSheet.rem = [];
